@@ -39,6 +39,13 @@ module Puppet::Parser::Functions
 
     store = {}
     Vault.with_retries(Vault::HTTPConnectionError) do
+      # with probability 10% self-renew token
+      if Random.rand <= 0.1
+        begin
+          Vault.client.auth_token.renew_self
+        rescue
+        end
+      end
       secret = Vault.logical.read("secret/#{facts}/#{name}")
       if secret
           if secret.data

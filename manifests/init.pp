@@ -27,6 +27,9 @@ class passgen::vault (
   }
   file { $vault_options_file:
     ensure    => present,
+    mode      => '0600',
+    owner     => puppet,
+    group     => puppet,
     content   => inline_template('<%= @vault_options.to_yaml %>'),
     show_diff => false,
   }
